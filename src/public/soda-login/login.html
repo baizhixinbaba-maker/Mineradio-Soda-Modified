@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script data-sdk-glue-default="pre-handler">
+      const e = function (e, t, a) {
+        if (Math.ceil(100 * Math.random()) <= 100 * t) {
+          const o = '386088'; const d = '24554'; const n = { ev_type: 'batch', list: [{ ev_type: 'custom', payload: { name: 'sdk_glue_load', type: 'event', metrics: {}, categories: { sdk_glue_load_status: e, sdk_glue_load_err_src: a, payload_bdms_aid: o, payload_bdms_page_id: d } }, common: { context: { ctx_bdms_aid: o, ctx_bdms_page_id: d }, bid: 'web_bdms_cn', pid: window.location.pathname, view_id: '/_1', user_id: '', session_id: '0-a-1-2-c', release: '', env: 'production', url: window.location.href, timestamp: +new Date(), sdk_version: '1.6.1', sdk_name: 'SDK_SLARDAR_WEB' } }] }; const i = new XMLHttpRequest(); i.open('POST', 'https://mon.zijieapi.com/monitor_browser/collect/batch/?biz_id=web_bdms_cn', !0), i.setRequestHeader('Content-type', 'application/json'), i.send(JSON.stringify(n))
+        }
+      }; e('before_load', 0.1, ''), window.addEventListener('error', (t) => {
+        const a = t.target || t.srcElement; a instanceof HTMLElement && a.nodeName == 'SCRIPT' && ((a.src || '').includes('sdk-glue') && e('load_error', 1, a.src))
+      }, !0)
+    </script>
+    <script data-sdk-glue-default="load" src="https://lf-headquarters-speed.yhgfb-cn-static.com/obj/rc-client-security/web/glue/1.0.0.36/sdk-glue.js"></script>
+    <script data-sdk-glue-default="init">
+      (function () {
+        const options = {
+          self: {
+            aid: 386088,
+            pageId: 24554,
+          },
+          bdms: {
+            aid: 386088,
+            paths: [
+              '.*',
+      ],
+
+    },
+  }
+        window._SdkGlueInit(options)
+      })()
+      </script>
+    <script>
+      // The official QR page is shared by Soda's Electron renderer and the web shell.
+      // Mineradio only needs the read-only settings and telemetry calls used by this page.
+      window.transportPort = {
+        registerTransport: function () {},
+        receiveTransport: function (handler) { window.__sodaTransportReceive = handler; },
+        sendTransport: function (message) {
+          if (!message || message.type !== 'method.invoke') return;
+          var handler = window.__sodaTransportReceive;
+          if (typeof handler !== 'function') return;
+          handler({
+            type: 'method.return',
+            fromServiceId: message.toServiceId,
+            toWorkerId: message.fromWorkerId,
+            methodName: message.methodName,
+            requestId: message.requestId,
+            return: { type: 'success', result: message.toServiceId === 'appSettings' ? { login: { ttwid: { enabled: false } } } : null }
+          });
+        }
+      };
+    </script>
+    <script>
+      (function () {
+        // The bundled Soda SDK stops QR polling whenever its document becomes
+        // hidden. This page lives in a tiny off-screen Electron window, so it
+        // must keep the page lifecycle visible while the user scans.
+        try {
+          Object.defineProperty(document, 'visibilityState', {
+            configurable: true,
+            get: function () { return 'visible'; }
+          });
+          Object.defineProperty(document, 'hidden', {
+            configurable: true,
+            get: function () { return false; }
+          });
+        } catch (_) {}
+        window.__mineradioSodaRequests = [];
+        window.__mineradioSodaQrConfirmed = false;
+        window.__mineradioSodaQrGenerationCount = 0;
+        window.__mineradioSodaQrStateHistory = [];
+        function noteQrState(status, source) {
+          status = String(status || '').toLowerCase();
+          if (!status) return;
+          var history = window.__mineradioSodaQrStateHistory;
+          var last = history[history.length - 1];
+          if (!last || last.status !== status) {
+            history.push({ status: status, source: source, at: Date.now() });
+            if (history.length > 24) history.shift();
+          }
+        }
+        function captureQrResponse(text) {
+          try {
+            window.__mineradioSodaQrResponse = JSON.parse(text || '{}');
+            window.__mineradioSodaQrGenerationCount += 1;
+          } catch (_) {
+            window.__mineradioSodaQrResponse = { message: 'SODA_QR_RESPONSE_PARSE_FAILED' };
+          }
+        }
+        var nativeClose = window.close.bind(window);
+        window.close = function () {
+          if (window.__mineradioSodaQrConfirmed) {
+            return;
+          }
+          nativeClose();
+        };
+        function captureQrCheck(url, text) {
+          if (!String(url || '').includes('check_qrconnect')) return;
+          try {
+            var data = JSON.parse(text || '{}');
+            var payload = data && (data.data || data) || {};
+            window.__mineradioSodaQrCheckResponse = data;
+            noteQrState(payload.status, 'response');
+            if (payload.status === 'confirmed' || String(payload.status) === '3') window.__mineradioSodaQrConfirmed = true;
+          } catch (_) {}
+        }
+        var open = XMLHttpRequest.prototype.open;
+        var send = XMLHttpRequest.prototype.send;
+        XMLHttpRequest.prototype.open = function (method, url) {
+          this.__mineradioSodaUrl = String(url || '');
+          window.__mineradioSodaRequests.push({ method: String(method || ''), url: this.__mineradioSodaUrl });
+          return open.apply(this, arguments);
+        };
+        XMLHttpRequest.prototype.send = function () {
+          this.addEventListener('loadend', function () {
+            if (this.__mineradioSodaUrl.includes('/passport/web/get_qrcode/')) {
+              // Axios may request JSON. responseText is unavailable while
+              // responseType is json, so use the parsed response directly.
+              try {
+                var raw = this.responseType === 'json' ? this.response : this.responseText;
+                captureQrResponse(typeof raw === 'string' ? raw : JSON.stringify(raw || {}));
+              } catch (_) {
+                captureQrResponse('{}');
+              }
+            }
+            try {
+              var checkRaw = this.responseType === 'json' ? this.response : this.responseText;
+              captureQrCheck(this.__mineradioSodaUrl, typeof checkRaw === 'string' ? checkRaw : JSON.stringify(checkRaw || {}));
+            } catch (_) {}
+          });
+          return send.apply(this, arguments);
+        };
+        var fetch = window.fetch;
+        window.fetch = async function (input) {
+          var response = await fetch.apply(this, arguments);
+          var url = typeof input === 'string' ? input : (input && input.url) || '';
+          window.__mineradioSodaRequests.push({ method: 'fetch', url: String(url), status: response.status });
+          if (String(url).includes('/passport/web/get_qrcode/')) {
+            captureQrResponse(await response.clone().text());
+          }
+          if (String(url).includes('check_qrconnect')) {
+            try { captureQrCheck(url, await response.clone().text()); } catch (_) {}
+          }
+          return response;
+        };
+      })();
+    </script>
+    <script type="module" crossorigin src="./assets/login-7a4b1afd.js"></script>
+    <link rel="stylesheet" href="./assets/login-1823359b.css">
+  </head>
+  <body>
+    <div id="app"></div>
+    
+  </body>
+</html>

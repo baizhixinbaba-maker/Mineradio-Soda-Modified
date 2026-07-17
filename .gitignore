@@ -1,0 +1,30 @@
+# Dependencies and generated runtime data
+src/node_modules/
+src/.soda-runtime/
+src/.soda-cookie
+**/node_modules/
+**/Cache/
+**/Code Cache/
+**/GPUCache/
+
+# Local Electron and browser profiles
+**/Partitions/
+**/DevToolsActivePort
+**/Local State
+**/Preferences
+
+# Local credentials, diagnostics and temporary files
+*.cookie
+*.token
+bridge-token
+**/*-diagnostics.json
+*.pid
+*.log
+
+# Build output and archives (keep release artifacts explicitly)
+dist/
+release/
+staging/
+
+# GitHub rejects files larger than 100 MB; publish release archives separately.
+artifacts/releases/*.zip
