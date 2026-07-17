@@ -2967,8 +2967,9 @@ async function ensureSodaBridge() {
       lastError = error;
     }
     stopSodaBridgeProcess(child);
-    const failure = lastError || new Error('SODA_BRIDGE_START_FAILED');
-    sodaBridgeLastFailure = { at: Date.now(), error: failure.message || 'SODA_BRIDGE_START_FAILED' };
+    const detail = String(lastError && lastError.message || 'UNKNOWN');
+    const failure = new Error(`SODA_BRIDGE_START_FAILED:${detail}`);
+    sodaBridgeLastFailure = { at: Date.now(), error: failure.message };
     throw failure;
   })().finally(() => { sodaBridgeStartPromise = null; });
   return sodaBridgeStartPromise;
@@ -3243,13 +3244,14 @@ async function handleSodaSongUrl(id, vid, quality) {
     const loginRequired = code === 'SODA_LOGIN_REQUIRED';
     const resourceUnavailable = /ERR_RESOURCE_NOT_FOUND|SODA_TRACK_VID_UNAVAILABLE|SODA_PLAYER_URL_UNAVAILABLE/.test(code);
     const bridgeDeploymentFailed = /^SODA_DEPLOY_[A-Z0-9_]+$/.test(code);
+    const bridgeRuntimeFailed = /^SODA_BRIDGE_|SODA_RENDERER_UNAVAILABLE|\b(?:EADDRINUSE|ECONNREFUSED|ECONNRESET|ETIMEDOUT|ENOENT)\b/.test(code);
     return {
       provider: 'soda',
       id: trackId,
       url: '',
       playable: false,
-      reason: loginRequired ? 'login_required' : (resourceUnavailable ? 'copyright_unavailable' : (bridgeDeploymentFailed ? 'bridge_setup_required' : 'url_unavailable')),
-      message: loginRequired ? '汽水音乐登录已失效，请重新登录' : (resourceUnavailable ? '汽水音乐当前未提供该曲目的音频资源' : (bridgeDeploymentFailed ? sodaBridgeDeploymentMessage(code) : '汽水音乐当前未提供可播放地址')),
+      reason: loginRequired ? 'login_required' : (resourceUnavailable ? 'copyright_unavailable' : ((bridgeDeploymentFailed || bridgeRuntimeFailed) ? 'bridge_setup_required' : 'url_unavailable')),
+      message: loginRequired ? '汽水音乐登录已失效，请重新登录' : (resourceUnavailable ? '汽水音乐当前未提供该曲目的音频资源' : (bridgeDeploymentFailed ? sodaBridgeDeploymentMessage(code) : (bridgeRuntimeFailed ? '汽水音乐播放组件启动失败，请重试或重启 Mineradio' : '汽水音乐当前未提供可播放地址'))),
       error: code,
     };
   }

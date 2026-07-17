@@ -2,21 +2,69 @@
   "schemaVersion": 1,
   "profiles": [
     {
-      "id": "soda-package-3.5.2-bridge-1",
+      "id": "soda-shell-3.5.1-bridge-2-from-bridge-1",
       "executable": "3.5.1/SodaMusic.exe",
       "executableSha256": "FDE402459DFC9369C33C5CB378ADCCE5C199B0A7AE027D72AED15BC48ED2312D",
       "files": [
         {
-          "target": "Packages/3.5.2/app.asar",
-          "payload": "3.5.2/app.asar",
-          "sourceSha256": "72BE352273D3F2F3588E42C01B55E7425336344132F0E5A709CB5B6850010327",
-          "patchedSha256": "359FFB81CD58477577FAF650124D61A67DD23443EB9359A28E90875DCD3A1C82",
+          "target": "3.5.1/resources/app.asar",
+          "payload": "3.5.1/app.asar",
+          "sourceSha256": "A215AF958FCD7BE5DB5A13540ECD7B0FE4A77E9384A4E891CB9B3EC99E548C64",
+          "patchedSha256": "1F52C897835135198C1A3762C97CEED7ED7774A70A38C7E01B2BC30AEC0794F1",
           "bridgeArchive": true
+        },
+        {
+          "target": "3.5.1/resources/app.asar.unpacked/bdms.node",
+          "payload": "3.5.1/app.asar.unpacked/bdms.node",
+          "sourceSha256": "15A262DA7E95424F0EA029F12BF21CD8FC50F5EB32F1DFDAD79CF5D79CD693C9",
+          "patchedSha256": "FF4AD7A354A73632B3CDAFF66D579C8452A1BDE2E96C389514ADE75A10424BBE"
+        },
+        {
+          "target": "3.5.1/resources/app.asar.unpacked/bdticket.node",
+          "payload": "3.5.1/app.asar.unpacked/bdticket.node",
+          "sourceSha256": "1E6760D6B0674052AD1200F83D13DCF91F87BC29896B46275DC518825FEF6EDE",
+          "patchedSha256": "E7ECB6400311FC9511308D3D5F710304FF1A4CB6BCA6171C27C792C565A9BB43"
+        },
+        {
+          "target": "3.5.1/resources/app.asar.unpacked/device.node",
+          "payload": "3.5.1/app.asar.unpacked/device.node",
+          "sourceSha256": "72C0002131FE8F19030CD6EF9AAFBAEA2B2DFE3B0E16A1410073E7CB85145612",
+          "patchedSha256": "EBCC4629B538D90D705D15844300635783DADD9680DD6D9405308C0D20A1E088"
+        },
+        {
+          "target": "3.5.1/resources/app.asar.unpacked/entry.node",
+          "payload": "3.5.1/app.asar.unpacked/entry.node",
+          "sourceSha256": "C3741C1260F9D9EBE6C811EF3E91D2BA1DD522E17940FE3193ABAF7538540EA6",
+          "patchedSha256": "17356F5BBBBF1BEBBCC5B81917EFB88986F9AECE37FB83BC61818D3E25C2763E"
+        },
+        {
+          "target": "3.5.1/resources/app.asar.unpacked/lmdb.node",
+          "payload": "3.5.1/app.asar.unpacked/lmdb.node",
+          "sourceSha256": "990E9CE23B2EB1B08B41B632CE456749F027BDEF5C5508487802EDC5CB84C906",
+          "patchedSha256": "ABACC2522B2C74F2A7FA7FB8CD1484A3863AF90BEA6E2B8F216047851FE445ED"
+        },
+        {
+          "target": "3.5.1/resources/app.asar.unpacked/main.node",
+          "payload": "3.5.1/app.asar.unpacked/main.node",
+          "sourceSha256": "A0021F15D034A195DD9ADD3CFB432763BD13CFA556ACA980DEB95C96E8B5376F",
+          "patchedSha256": "305A1C41D28FAEF934793CDF6D6E5B76F820A09F1AB552331978D12F475EC85A"
+        },
+        {
+          "target": "3.5.1/resources/app.asar.unpacked/taskbar_widget_helper.node",
+          "payload": "3.5.1/app.asar.unpacked/taskbar_widget_helper.node",
+          "sourceSha256": "CE38C36FDAE7F46832698C9140A694106980A95AD17213E4CF9C9482606C978A",
+          "patchedSha256": "71999E1B69995C1E795DECAED7598A82E5282346F2D7F1AE3C21F0EB47D2D85F"
+        },
+        {
+          "target": "3.5.1/resources/app.asar.unpacked/ttnet.node",
+          "payload": "3.5.1/app.asar.unpacked/ttnet.node",
+          "sourceSha256": "D6F85587613A4F3F5F3CFEDEAD295629AC1B378AF37D85FFF1A8EFD2B7B8670A",
+          "patchedSha256": "FB51F377E16202A6E4FCD530D446FE9E55E45CBA7C6D184267F6B89FC6834CC5"
         }
       ]
     },
     {
-      "id": "soda-shell-3.5.1-bridge-1",
+      "id": "soda-shell-3.5.1-bridge-2",
       "executable": "3.5.1/SodaMusic.exe",
       "executableSha256": "FDE402459DFC9369C33C5CB378ADCCE5C199B0A7AE027D72AED15BC48ED2312D",
       "files": [
@@ -24,7 +72,7 @@
           "target": "3.5.1/resources/app.asar",
           "payload": "3.5.1/app.asar",
           "sourceSha256": "441E675FF7F1AC7599F98C6633472B336A6A5BA6DB2C447AF11A1EBB947006B6",
-          "patchedSha256": "A215AF958FCD7BE5DB5A13540ECD7B0FE4A77E9384A4E891CB9B3EC99E548C64",
+          "patchedSha256": "1F52C897835135198C1A3762C97CEED7ED7774A70A38C7E01B2BC30AEC0794F1",
           "bridgeArchive": true
         },
         {
